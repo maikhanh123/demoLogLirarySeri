@@ -1,12 +1,12 @@
-using System;
-using System.IO;
-using System.Threading.Tasks;
+using Klogger;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace FunctionApp1
 {
@@ -24,6 +24,9 @@ namespace FunctionApp1
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
             name = name ?? data?.name;
+
+            var klog = new KloggerDetail() { Message = "aaa" };
+            CoreKlogger.WriteUsage(klog);
 
             return name != null
                 ? (ActionResult)new OkObjectResult($"Hello, {name}")
